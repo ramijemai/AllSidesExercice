@@ -2,7 +2,42 @@
 
 ## What it does
 
-This project simulates a camera sensor (`FakeCamera`) and combines three images taken at different exposure times into a single High Dynamic Range (HDR) image (`HdrCombiner`).
+This project simulates a camera sensor (`FakeCamera`) and combines three images taken at different exposure times into a single High Dynamic Range (HDR) image (`HdrCombiner`). The result is tone mapped and saved as a viewable 8-bit PNG.
+
+---
+
+## How to Build
+
+### Requirements
+- CMake 3.12+
+- C++20 compatible compiler (GCC, MSVC, Clang)
+- No external dependencies — `stb_image_write.h` is included in `Headers/`
+
+### Steps (Windows - MinGW / Linux / Mac)
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build .
+./AllSidesExercice.exe
+```
+
+## Project Structure
+
+```
+AllSidesExercice/
+├── Headers/
+│   ├── Constants.h          # Shared constants (MAX_VAL, BASE_EXPOSURE)
+│   ├── FakeCamera.h
+│   ├── HdrCombiner.h
+│   └── stb_image_write.h    # Single-header PNG writer  
+├── Implementations/
+│   ├── FakeCamera.cpp
+│   └── HdrCombiner.cpp
+├── CMakeLists.txt
+├── main.cpp
+└── README.md
+```
 
 ---
 
@@ -45,6 +80,41 @@ HDR = (w1 × p1/gain1 + w2 × p2/gain2 + w3 × p3/gain3) / (w1 + w2 + w3)
 
 ---
 
+## Tone Mapping
+
+The raw HDR output (float values) is converted to a viewable 8-bit image using:
+
+**1. Reinhard tone mapping:**
+```
+mapped = x / (1 + x)
+```
+
+**2. Gamma correction:**
+```
+output = mapped ^ (1/2.2)
+```
+
+The result is saved as `output.png` in the build directory.
+
+---
+
+## Benchmarking
+
+Timings measured on a 4504×4504 image (single-threaded):
+
+| Operation | Time |
+|-----------|------|
+| Capture 5ms | ~2400 ms |
+| Capture 40ms | ~2400 ms |
+| Capture 320ms | ~2400 ms |
+| HDR merge | ~450 ms |
+
+**Main bottleneck:** Gaussian noise generation (~20M random numbers per frame).
+
+**Suggested optimization:** Parallelizing the pixel loop with OpenMP would distribute work across all CPU cores, reducing capture time by 4-8x on a modern processor.
+
+---
+
 ## Assumptions
 
 - The sensor response is **linear** (pixel = scene × gain)
@@ -56,12 +126,19 @@ HDR = (w1 × p1/gain1 + w2 × p2/gain2 + w3 × p3/gain3) / (w1 + w2 + w3)
 
 ## Known Limitations
 
-- **No tone mapping** — output is a raw HDR float image, not directly displayable
 - **Linear sensor assumed** — real cameras may have a non-linear response curve
-- **Single-threaded** — for 4504×4504 images (~20M pixels), performance could be improved with parallelism (e.g. OpenMP)
-- **No color support** — grayscale only
+- **Single-threaded** — performance could be improved with OpenMP for 4504×4504 images
+- **Grayscale only** — no color/Bayer support
+- **No color tone mapping** — grayscale Reinhard only
 
 ---
+
+## Third Party Libraries
+
+| Library | Purpose | License | Source |
+|---------|---------|---------|--------|
+| stb_image_write.h | Save PNG images | Public Domain | https://github.com/nothings/stb |
+
 
 ## Reference
 
