@@ -1,0 +1,57 @@
+build/
+out/
+.vs/
+*.exe
+*.obj
+*.ninja
+CMakeCache.txt
+CMakeFiles/
+
+# Additional compiled object files
+*.o
+*.lo
+*.slo
+
+# Precompiled headers
+*.gch
+*.pch
+
+# Additional compiled libraries
+*.so
+*.dylib
+*.a
+*.lai
+*.la
+
+# Additional executables (beyond *.exe)
+*.out
+*.app
+
+# More CMake-generated files
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+# Alternative build directory patterns
+cmake-build-*/
+cmake-build-debug/
+cmake-build-release/
+
+# IDE and editor files
+.vscode/  # Optional: Uncomment if you don't want to commit VS Code settings
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS files (in case of cross-platform work)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Additional Windows files
+ehthumbs.db
