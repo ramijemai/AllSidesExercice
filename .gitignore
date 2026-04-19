@@ -46,6 +46,7 @@ cmake-build-release/
 *.swo
 *~
 
+
 # macOS files (in case of cross-platform work)
 .DS_Store
 .DS_Store?
