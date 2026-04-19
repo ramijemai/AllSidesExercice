@@ -15,11 +15,11 @@ This project simulates a camera sensor (`FakeCamera`) and combines three images 
 
 ### Steps (Windows - MinGW / Linux / Mac)
 ```bash
-mkdir build
+mkdir build       
 cd build
 cmake ..
 cmake --build .
-./AllSidesExercice.exe
+./AllSidesExercice.exe    #to run the project
 ```
 
 ## Project Structure
