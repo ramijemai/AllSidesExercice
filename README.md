@@ -2,7 +2,7 @@
 
 ## What it does
 
-This project simulates a camera sensor (`FakeCamera`) and combines three images taken at different exposure times into a single High Dynamic Range (HDR) image (`HdrCombiner`). The result is tone mapped and saved as a viewable 8-bit PNG.
+This project simulates a camera sensor (`FakeCamera`) and combines three images taken at different exposure times into a single High Dynamic Range (HDR) image (`HdrCombiner`). The result is tone mapped using Reinhard and saved as a viewable 8-bit PNG.
 
 ---
 
@@ -13,14 +13,36 @@ This project simulates a camera sensor (`FakeCamera`) and combines three images 
 - C++20 compatible compiler (GCC, MSVC, Clang)
 - No external dependencies — `stb_image_write.h` is included in `Headers/`
 
-### Steps (Windows - MinGW / Linux / Mac)
+### Steps (Windows)
 ```bash
-mkdir build       
+mkdir build
 cd build
 cmake ..
 cmake --build .
-./AllSidesExercice.exe    #to run the project
+.\AllSidesExercice.exe
 ```
+
+### Steps (Linux / Mac)
+```bash
+mkdir build
+cd build
+cmake ..
+cmake --build .
+./AllSidesExercice
+```
+
+### Expected output
+```
+Capture 5ms   : X ms
+Capture 40ms  : X ms
+Capture 320ms : X ms
+HDR merge     : X ms
+
+HDR Result: 20286016 pixels, range [min, max]
+Saved output.png ✓
+```
+
+---
 
 ## Project Structure
 
@@ -30,12 +52,15 @@ AllSidesExercice/
 │   ├── Constants.h          # Shared constants (MAX_VAL, BASE_EXPOSURE)
 │   ├── FakeCamera.h
 │   ├── HdrCombiner.h
-│   └── stb_image_write.h    # Single-header PNG writer  
+│   └── stb_image_write.h    # Single-header PNG writer (third party)
 ├── Implementations/
 │   ├── FakeCamera.cpp
 │   └── HdrCombiner.cpp
 ├── CMakeLists.txt
+├── CMakePresets.json
+├── bindings.cpp             # Python bindings via pybind11
 ├── main.cpp
+├── test_hdr.py              # Python test script
 └── README.md
 ```
 
@@ -115,6 +140,28 @@ Timings measured on a 4504×4504 image (single-threaded):
 
 ---
 
+## Python Bindings (Bonus)
+
+The C++ classes are exposed to Python via **pybind11**.
+
+### Requirements
+- Python 3.x
+- pybind11: `pip install pybind11`
+
+### Build with bindings
+Add the pybind11 path to `CMakePresets.json`:
+```json
+"pybind11_DIR": "path/to/pybind11/share/cmake/pybind11"
+```
+Then reconfigure and build.
+
+### Run the test script
+```bash
+python test_hdr.py
+```
+
+---
+
 ## Assumptions
 
 - The sensor response is **linear** (pixel = scene × gain)
@@ -138,7 +185,9 @@ Timings measured on a 4504×4504 image (single-threaded):
 | Library | Purpose | License | Source |
 |---------|---------|---------|--------|
 | stb_image_write.h | Save PNG images | Public Domain | https://github.com/nothings/stb |
+| pybind11 | Python bindings | BSD | https://github.com/pybind/pybind11 |
 
+---
 
 ## Reference
 
