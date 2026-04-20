@@ -57,7 +57,6 @@ AllSidesExercice/
 │   ├── FakeCamera.cpp
 │   └── HdrCombiner.cpp
 ├── CMakeLists.txt
-├── CMakePresets.json
 ├── bindings.cpp             # Python bindings via pybind11
 ├── main.cpp
 ├── test_hdr.py              # Python test script
